@@ -1,0 +1,179 @@
+﻿@*@model IEnumerable<CostControlWebsite.Models.T_PR>*@
+@model dynamic
+@{
+    ViewBag.Title = "ShowPR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    if (Session["User_name"] == null && Session["User_name2"] == null)
+    {
+        <script type="text/javascript">
+
+            window.location.href = '/Login/LoginIndex/';
+
+        </script>
+    }}
+
+<DOCTYPE! HTML>
+    <div style="text-align:center;width:100%;height:10%;">
+        <h2>
+            <span style="color: red">P</span>
+            <span style="color: blue">R</span>
+        </h2>
+    </div>
+    @using (Html.BeginForm("SearchJobPR", "Show", FormMethod.Post))
+    {
+        <select name="SearchJob" id="SearchJob" onchange="location.href='../Show/SearchJobPR?SearchJob='+this.value">
+            <option value="">--Search By Job--</option>
+            @foreach (dynamic t_Job in Model.T_Job)
+            {
+                <option value="@t_Job.PRJob">@t_Job.PRJob</option>
+
+                @*<option onchange="location.href='@Url.Action("SearchJob","Show",new {Search = t_Job.PoJob})'" >@t_Job.PoJob</option>*@}      }
+        </select>
+    }
+
+    @using (Html.BeginForm("SearchPR", "Show", FormMethod.Post))
+    {
+        <form>
+            <div>
+
+                <input type="text" id="Search" name="Search" placeholder="@ViewBag.PR">
+
+                <input type="submit" id="submitId" value="Seacrh" class="btn btn-primary" onclick="location.href='@Url.Action("SearchPR","Show")'" />
+
+            </div>
+        </form>
+    }
+    <br />
+    <div style="height:400px;overflow-y:scroll">
+        <div class="table-responsive">
+            <table id="customers" class="table">
+                <tr class="info">
+
+                    <th>
+                        PR
+                    </th>
+                    <th>
+                        Area
+                    </th>
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+
+
+
+
+                @foreach (dynamic t_pr in Model.T_Pr)
+                {
+
+                    <tr class="active">
+                        <td>
+                            @t_pr.PR_no
+                        </td>
+                        <td>
+                            @t_pr.Area
+                        </td>
+
+                        <td>
+                            @t_pr.PR_date.ToString("dd-MM-yyyy")
+                        </td>
+
+                        <td>
+                            @t_pr.Total.ToString("#,##0.00#")
+                        </td>
+
+                        <td>
+                            @t_pr.SmtStatus
+                        </td>
+                        <td>
+                            @{ if (Session["User_name"] != null)
+                                {
+                                    <button type="button" onclick="Approved('@t_pr.PR_no');" id="Approved" class="btn btn-success">
+                                        <i class="glyphicon glyphicon-check" aria-hidden="true"></i> Approved
+                                    </button>
+                                    <button type="button" onclick="Holding('@t_pr.PR_no');" id="Holding" class="btn btn-warning">
+                                        <i class="glyphicon glyphicon-book" aria-hidden="true"></i> Holding
+                                    </button>
+                                    <button type="button" onclick="ReJect('@t_pr.PR_no');" id="ReJect" class="btn btn-danger">
+                                        <i class="glyphicon glyphicon-book" aria-hidden="true"></i> Reject
+                                    </button> } }
+                            <button type="button" id="submitId" value="Report" class="btn btn-primary" onclick="location.href='@Url.Action("GetReportPR", "Show", new { PR_no = t_pr.PR_no })'">
+                                <i class="glyphicon glyphicon-file" aria-hidden="true"></i> Report
+                            </button>
+                        </td>
+                    </tr>
+
+                }
+
+            </table>
+        </div>
+
+        <div class="table-responsive">
+            <div class="modal fade" id="ApprovedPRModal" role="dialog" data-url='@Url.Action("ApprovedPR","Show")'></div>
+        </div>
+        <div class="table-responsive">
+            <div class="modal fade" id="HoldingPRModal" role="dialog" data-url='@Url.Action("HoldingPR","Show")'></div>
+        </div>
+        <div class="table-responsive">
+            <div class="modal fade" id="ReJectPRModal" role="dialog" data-url='@Url.Action("ReJectPR","Show")'></div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    @section scripts{
+        <script type="text/javascript">
+            function Approved(PR_no) {
+
+                var i = document.getElementById("Approved").value;
+                console.log(i);
+                var url = $('#ApprovedPRModal').data('url');
+                url += "?PR_no=" + PR_no
+                $.get(url, function (data) {
+                    $("#ApprovedPRModal").html(data);
+                    $("#ApprovedPRModal").modal('show');
+                });
+            }
+            function Holding(PR_no) {
+
+                var i = document.getElementById("Holding").value;
+                console.log(i);
+                var url = $('#HoldingPRModal').data('url');
+                url += "?PR_no=" + PR_no
+                $.get(url, function (data) {
+                    $("#HoldingPRModal").html(data);
+                    $("#HoldingPRModal").modal('show');
+                });
+
+
+            }
+            function ReJect(PR_no) {
+
+                var i = document.getElementById("ReJect").value;
+                console.log(i);
+                var url = $('#ReJectPRModal').data('url');
+                url += "?PR_no=" + PR_no
+                $.get(url, function (data) {
+                    $("#ReJectPRModal").html(data);
+                    $("#ReJectPRModal").modal('show');
+                });
+
+
+            }
+        </script>
+    }
+
+
+</DOCTYPE!>

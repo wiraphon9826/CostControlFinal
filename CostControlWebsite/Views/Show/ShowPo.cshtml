@@ -1,0 +1,177 @@
+﻿@*@model IEnumerable<CostControlWebsite.dynamic.T_Po>*@
+@model dynamic
+@{
+    ViewBag.Title = "ShowPo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    if (Session["User_name"] == null && Session["User_name2"] == null)
+    {
+        <script type="text/javascript">
+
+            window.location.href = '/Login/LoginIndex/';
+
+        </script>
+    }}
+
+        <DOCTYPE! HTML>
+
+
+           <header>
+                <div style="text-align:center;width:100%;height:10%;">
+                    <h2>
+                        <span style="color: red">P</span>
+                        <span style="color: blue">o</span>
+                    </h2>
+                </div>
+            </header>
+      
+                @using (Html.BeginForm("SearchJob", "Show", FormMethod.Post))
+                {
+                    <select name="SearchJob" id="SearchJob" onchange="location.href='../Show/SearchJob?SearchJob='+this.value">
+                        <option value="">--Search By Job--</option>
+                        @foreach (dynamic t_Job in Model.T_Job)
+                        {
+                            <option value="@t_Job.PoJob">@t_Job.PoJob</option>
+
+                            @*<option onchange="location.href='@Url.Action("SearchJob","Show",new {Search = t_Job.PoJob})'" >@t_Job.PoJob</option>*@                }      }
+                    </select>
+                }
+                @using (Html.BeginForm("Search", "Show", FormMethod.Post))
+                {
+                    <form>
+                        <div>
+
+                            <input type="text" id="Search" name="Search" placeholder="@ViewBag.PO">
+
+                            <input type="submit" id="submitId" value="Seacrh" class="btn btn-primary" onclick="location.href='@Url.Action("Search","Show")'" />
+
+                        </div>
+                    </form>
+                }
+                <br />
+                <div style="height:400px;overflow-y:scroll">
+                    <div class="table-responsive">
+                        <table id="customers" class="table">
+                            <tr class="info">
+                                <th>
+                                    PO
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Deldate
+                                </th>
+                                <th>
+                                    Total
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+
+                            @foreach (dynamic t_po in Model.T_Po)
+                            {
+
+                                <tr class="active">
+                                    <td>
+                                        @t_po.PoNo
+                                    </td>
+                                    <td>
+                                        @t_po.PoDate.ToString("dd-MM-yyyy")
+                                    </td>
+
+                                    <td id="date">
+
+                                        @t_po.DelDate.ToString("dd-MM-yyyy")
+                                    </td>
+
+                                    <td>
+                                        @t_po.Total.ToString("#,##0.00#")
+                                    </td>
+                                    <td>
+                                        @t_po.SmtStatus
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        @{ if (Session["User_name"] != null)
+                                            {
+                                                <button type="button" onclick="Approved('@t_po.PoNo');" id="Approved" class="btn btn-success">
+                                                    <i class="glyphicon glyphicon-check" aria-hidden="true"></i> Approved
+                                                </button>
+                                                <button type="button" onclick="Holding('@t_po.PoNo');" id="Holding" class="btn btn-warning">
+                                                    <i class="glyphicon glyphicon-book" aria-hidden="true"></i> Holding
+                                                </button>
+                                                <button type="button" onclick="ReJect('@t_po.PoNo');" id="ReJect" class="btn btn-danger">
+                                                    <i class="glyphicon glyphicon-book" aria-hidden="true"></i> ReJect
+                                                </button>
+                                            } }
+                                        <button type="button" id="submitId" value="Report" class="btn btn-primary" onclick="location.href='@Url.Action("GetReport", "Show",new {PoNo = t_po.PoNo })'">
+                                            <i class="glyphicon glyphicon-file" aria-hidden="true"></i> Report
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            }
+
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="modal fade" id="ApprovedPOModal" role="dialog" data-url='@Url.Action("Approved","Show")'></div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="modal fade" id="HoldingPOModal" role="dialog" data-url='@Url.Action("Holding","Show")'></div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="modal fade" id="ReJectPOModal" role="dialog" data-url='@Url.Action("ReJectPO","Show")'></div>
+                    </div>
+                </div>
+          
+                <script src="~/Scripts/jquery-3.3.1.js"></script>
+                <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+                @section scripts{
+                    <script type="text/javascript">
+                        function Approved(PoNo) {
+
+                            var i = document.getElementById("Approved").value;
+                            console.log(i);
+                            var url = $('#ApprovedPOModal').data('url');
+                            url += "?PoNo=" + PoNo
+                            $.get(url, function (data) {
+                                $("#ApprovedPOModal").html(data);
+                                $("#ApprovedPOModal").modal('show');
+                            });
+                        }
+                        function Holding(PoNo) {
+
+                            var i = document.getElementById("Holding").value;
+                            console.log(i);
+                            var url = $('#HoldingPOModal').data('url');
+                            url += "?PoNo=" + PoNo
+                            $.get(url, function (data) {
+                                $("#HoldingPOModal").html(data);
+                                $("#HoldingPOModal").modal('show');
+                            });
+
+
+                        }
+                        function ReJect(PoNo) {
+
+                            var i = document.getElementById("ReJect").value;
+                            console.log(i);
+                            var url = $('#ReJectPOModal').data('url');
+                            url += "?PoNo=" + PoNo
+                            $.get(url, function (data) {
+                                $("#ReJectPOModal").html(data);
+                                $("#ReJectPOModal").modal('show');
+                            });
+
+
+                        }
+                    </script>
+                }
+        </DOCTYPE!>

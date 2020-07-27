@@ -1,0 +1,121 @@
+﻿@model CostControlWebsite.Models.T_Admin
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title  PO & PR</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/Login.css" rel="stylesheet" />
+    <style>
+        .footer {
+            margin-bottom: 10px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #d9edf7;
+            color: #9d9d9d;
+            text-align: center;
+        }
+
+        .test {
+            color: black;
+        }
+
+        div.card {
+            width: 250px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+        }
+    </style>
+
+
+
+</head>
+<body>
+    <div class="navbar navbar-brand navbar-fixed-top" style="background-color:#d9edf7;">
+        <div class="container">
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav"></ul>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="container">
+        @using (Html.BeginForm("LoginIndex", "Login", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {@Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="login-box">
+            <br />
+            <p style="font-size:32px;text-align:center;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
+                <span style="color: red">L</span>
+                <span style="color: blue">o</span>
+                <span style="color: cadetblue">g</span>
+                <span style="color: darkgreen">I</span>
+                <span style="color: brown">n</span>
+
+            </p>
+            <br />
+            <form>
+                <div class="user-box">
+                    @Html.TextBoxFor(m => m.User_name, new { @placeholder = "User" })
+                    @Html.ValidationMessageFor(m => m.User_name, "", new { @class = "text-danger" })
+                </div>
+                <div class="user-box">
+                    @Html.PasswordFor(m => m.Password, new { @placeholder = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <a href="#">
+                    <p style="text-align:center;">
+                        <input class="btn btn-primary" type="submit" value="Sign In" name="login">
+                    </p>
+                </a>
+            </form>
+        </div>
+       
+    }
+    </div>
+</body>
+</html>
+
+
+@{
+    if (TempData["message"] != null)
+    {
+        <script type="text/javascript">
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'UserName and Password Invalid !!!',
+                footer: '<a href></a>'
+            })
+
+        </script>
+    }
+    if (TempData["mgs"] != null)
+    {
+        <script type="text/javascript">
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please input UserName and Password  !!!',
+                footer: '<a href></a>'
+            })
+        </script>
+
+
+    }
+
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
